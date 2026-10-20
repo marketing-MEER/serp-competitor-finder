@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "serp-competitor-finder"
+version = "1.0.0"
+description = "Find your true SERP competitors and their share of voice from a ranking export"
+readme = "README.md"
+license = { text = "MIT" }
+authors = [{ name = "Meer Hamza", email = "meerhamza5@gmail.com" }]
+requires-python = ">=3.10"
+dependencies = ["requests>=2.28", "beautifulsoup4>=4.11", "pandas>=1.5", "openpyxl>=3.1", "click>=8.1"]
+keywords = ["seo", "serp", "competitor", "finder"]
+
+[project.urls]
+Homepage = "https://github.com/marketing-MEER/serp-competitor-finder"
+"SEO Toolbox" = "https://github.com/marketing-MEER/seo-toolbox"
+LinkedIn = "https://www.linkedin.com/in/meerhamza-seo"
+
+[project.scripts]
+serp-competitor-finder = "serp_competitor_finder.cli:main"
+
+[tool.setuptools]
+packages = ["serp_competitor_finder"]

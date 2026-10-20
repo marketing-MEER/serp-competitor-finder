@@ -67,11 +67,24 @@ def to_number(series: pd.Series) -> pd.Series:
 
 
 def _esc(value) -> str:
+    if value is None or (isinstance(value, float) and value != value):  # None / NaN
+        return "–"
+    if isinstance(value, bool) or type(value).__name__ == "bool_":
+        return "✓" if value else ""
     if isinstance(value, float):
         value = f"{value:,.2f}".rstrip("0").rstrip(".")
     elif isinstance(value, int):
         value = f"{value:,}"
     return html.escape(str(value))
+
+
+def _label(column) -> str:
+    """Column name for display: snake_case -> 'Snake case'; domains and other dotted names stay as-is."""
+    text = str(column)
+    if "." in text:
+        return text
+    text = text.replace("_", " ")
+    return text[:1].upper() + text[1:]
 
 
 def _cell(value) -> str:
@@ -119,7 +132,7 @@ class Report:
             body = '<p class="empty">Nothing found. 🎉</p>'
         else:
             shown = df.head(MAX_HTML_ROWS)
-            head = "".join(f"<th>{_esc(str(c).replace('_', ' '))}</th>" for c in shown.columns)
+            head = "".join(f"<th>{_esc(_label(c))}</th>" for c in shown.columns)
             rows = "".join("<tr>" + "".join(_cell(v) for v in row) + "</tr>"
                            for row in shown.itertuples(index=False))
             more = (f'<p class="more">Showing {MAX_HTML_ROWS} of {len(df):,} rows. '
@@ -170,7 +183,7 @@ section {{ background:var(--panel); border:1px solid var(--line); border-radius:
 table {{ border-collapse:collapse; width:100%; font-size:13.5px; }}
 th {{ text-align:left; background:var(--bg); position:sticky; top:0; }}
 th, td {{ padding:8px 10px; border-bottom:1px solid var(--line); vertical-align:top; white-space:nowrap; }}
-th {{ text-transform:capitalize; font-size:12.5px; }}
+th {{ font-size:12.5px; }}
 td.long {{ white-space:normal; min-width:220px; max-width:420px; overflow-wrap:anywhere; }}
 tbody tr:hover {{ background:var(--bg); }}
 a {{ color:var(--accent); }}
